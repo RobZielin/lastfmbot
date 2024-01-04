@@ -1,6 +1,11 @@
 import discord
 import actions
+import pylast
 
+# global FMKey variable
+FMKey = None
+FMSecret = None
+network = None
 
 # parses user messages in actions.py
 async def event(message, user_message, privacy):
@@ -12,8 +17,10 @@ async def event(message, user_message, privacy):
         print(e)
 
 
-# initializes the bot, token must be pasted in token.txt
+# initializes the bot, tokens key and secret must be pasted in token.txt
 def run():
+    global FMKey, FMSecret, network
+
     with open("token.txt", "r") as file:
         lines = file.readlines()
         botToken = lines[1].strip()
@@ -45,6 +52,9 @@ def run():
         if message.content.startswith("!"):
             user_message = message.content[1:].strip()
             await event(message, user_message, privacy=message.channel.type == 'private')
+
+    # creates network object required to access last.fm information
+    network = pylast.LastFMNetwork(FMKey, FMSecret)
 
     # runs the client
     client.run(botToken)
