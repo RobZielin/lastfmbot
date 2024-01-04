@@ -7,6 +7,8 @@ async def getResponse(message: discord.Message, user_message):
     from bot import network
 
     p_message = user_message.lower()
+
+    # breaks up the message into a command and a target
     try:
         _, target = user_message.split(' ', 1)
     except Exception:
@@ -26,16 +28,18 @@ async def getResponse(message: discord.Message, user_message):
 
     user = auth.getToken(target)
 
-    if str(user) == 'None':
-        return '**' + target + '** has not connected their Last.fm to Discord'
-    else:
+    if str(user) != 'None':
         if p_message.startswith('playing'):
             track = network.get_user(user).get_now_playing()
             if str(track) == 'None':
                 return '**' + user + '** is not currently scrobbling'
             else:
                 return user + ' is currently scrobbling to: **' + str(track) + '**'
-        elif p_message == 'hello':
-            return 'world'
+
+    if p_message == 'hello':
+        return 'world'
+    else:
+        if target is not None and p_message.startswith('playing'):
+            return '**'+ target + '** is not a recognised user'
         else:
-            return user_message + " is not a recognised command"
+            return p_message + ' is not a recongnised command'
