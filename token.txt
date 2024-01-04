@@ -1,0 +1,6 @@
+Discord bot token:
+[Paste Bot Token Here]
+Last.fm API key:
+[Paste Last.fm API key here]
+Last.fm shared secret:
+[Paste Last.fm shared secret here]
