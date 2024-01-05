@@ -14,6 +14,7 @@ async def getResponse(message: discord.Message, user_message):
     except Exception:
         target = None
 
+    # this associates a discord user to their specified last.fm account
     if p_message.startswith('connect'):
         try:
             # tries to verify if the username is correct by making an api call with that username
@@ -28,16 +29,21 @@ async def getResponse(message: discord.Message, user_message):
 
     user = auth.getToken(target)
 
+    # first check if the user exists to prevent unnecessary API calls, if the user exists make a call 
     if str(user) != 'None':
         if p_message.startswith('playing'):
             track = network.get_user(user).get_now_playing()
             if str(track) == 'None':
                 return '**' + user + '** is not currently scrobbling'
+            # add last.fm commands that require a target user here using elif statements
             else:
                 return user + ' is currently scrobbling to: **' + str(track) + '**'
 
+    # ordinary bot commands that do not require last.fm, add more under the first if statement as elif statements
     if p_message == 'hello':
         return 'world'
+    # else statement that runs in case there was no matching commands, first does a check if a command is referencing a non-existing user, if not defaults to the unrecognized command statement
+    # if additional commands are added, this part should be rewritten to perhaps check from a list of commands
     else:
         if target is not None and p_message.startswith('playing'):
             return '**'+ target + '** is not a recognised user'
